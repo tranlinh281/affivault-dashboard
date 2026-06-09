@@ -51,7 +51,7 @@
 }
 
 #root {
-  width: 1126px;
+  width: min(1126px, 100%);
   max-width: 100%;
   margin: 0 auto;
   text-align: center;
@@ -64,6 +64,40 @@
 
 body {
   margin: 0;
+}
+
+.ant-layout-header {
+  padding: 0 16px;
+}
+
+.ant-layout-content {
+  margin: 24px;
+}
+
+@media (max-width: 768px) {
+  .ant-layout-header {
+    padding: 0 12px;
+  }
+
+  .ant-layout-content {
+    margin: 16px 12px;
+  }
+
+  .ant-card {
+    max-width: 100%;
+  }
+}
+
+.ant-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.ant-table-cell,
+.ant-table-thead > tr > th,
+.ant-table-tbody > tr > td {
+  white-space: normal;
+  word-break: break-word;
 }
 
 h1,

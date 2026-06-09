@@ -55,9 +55,10 @@ export default function LoginPage() {
         display: 'grid',
         placeItems: 'center',
         background: '#f5f5f5',
+        padding: '24px',
       }}
     >
-      <Card style={{ width: 420 }}>
+      <Card style={{ width: '100%', maxWidth: 420 }}>
         <Typography.Title level={3}>AffiVault Login</Typography.Title>
 
         <Form layout="vertical" onFinish={handleLogin}>

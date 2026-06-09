@@ -75,7 +75,11 @@ export default function CampaignsPage() {
       <Typography.Title level={3}>Campaigns</Typography.Title>
 
       <Card style={{ marginBottom: 16 }}>
-        <Form form={form} layout="vertical">
+        <Form
+          form={form}
+          layout="vertical"
+          style={{ display: 'grid', gap: 12 }}
+        >
           <Form.Item
             label="Campaign Name"
             name="name"
@@ -88,14 +92,17 @@ export default function CampaignsPage() {
             <Input.TextArea rows={3} placeholder="Campaign note..." />
           </Form.Item>
 
-          <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
-            Create Campaign
-          </Button>
+          <Form.Item>
+            <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
+              Create Campaign
+            </Button>
+          </Form.Item>
         </Form>
       </Card>
 
       <Card>
         <Table
+          scroll={{ x: '100%' }}
           rowKey="id"
           loading={loading}
           dataSource={campaigns}

@@ -47,31 +47,31 @@ export default function DashboardPage() {
       <Typography.Title level={3}>Dashboard</Typography.Title>
 
       <Row gutter={[16, 16]}>
-        <Col span={6}>
+        <Col xs={24} sm={12} md={12} lg={6}>
           <Card>
             <Statistic title="Total Links" value={links.length} />
           </Card>
         </Col>
 
-        <Col span={6}>
+        <Col xs={24} sm={12} md={12} lg={6}>
           <Card>
             <Statistic title="Shopee Links" value={shopeeCount} />
           </Card>
         </Col>
 
-        <Col span={6}>
+        <Col xs={24} sm={12} md={12} lg={6}>
           <Card>
             <Statistic title="Lazada Links" value={lazadaCount} />
           </Card>
         </Col>
 
-        <Col span={6}>
+        <Col xs={24} sm={12} md={12} lg={6}>
           <Card>
             <Statistic title="TikTok Shop Links" value={tiktokCount} />
           </Card>
         </Col>
 
-        <Col span={6}>
+        <Col xs={24} sm={12} md={12} lg={6}>
           <Card>
             <Statistic title="Categories" value={categories.length} />
           </Card>

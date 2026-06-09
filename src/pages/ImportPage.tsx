@@ -75,13 +75,13 @@ export default function ImportPage() {
 
         <Input.TextArea
           rows={8}
-          style={{ marginTop: 12 }}
+          style={{ width: '100%', marginTop: 12 }}
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder='Example: 29550655116,"Bàn Phím Cơ Bluetooth AULA F99 PRO","1,3tr",3k+,Flash Titan,6%,₫77.400,https://shopee.vn/product/232780266/29550655116,https://s.shopee.vn/AKY3qhH87J'
         />
 
-        <Space style={{ marginTop: 12 }}>
+        <Space wrap style={{ marginTop: 12 }}>
           <Button type="primary" loading={importing} onClick={handleImport}>
             Import {parsedItems.length > 0 ? `(${parsedItems.length})` : ''}
           </Button>
@@ -94,6 +94,7 @@ export default function ImportPage() {
         <Table
           rowKey={(record) => record.affiliateUrl || record.productUrl}
           dataSource={parsedItems}
+          scroll={{ x: '100%' }}
           columns={[
             {
               title: 'Product',

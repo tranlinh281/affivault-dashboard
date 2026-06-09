@@ -118,6 +118,8 @@ export default function AddLinkModal({
       onOk={handleSubmit}
       okText={isEdit ? 'Update' : 'Create'}
       destroyOnClose
+      style={{ maxWidth: '95vw' }}
+      bodyStyle={{ padding: '24px 16px' }}
     >
       <Form form={form} layout="vertical">
         <Form.Item

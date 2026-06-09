@@ -81,8 +81,8 @@ export default function LinkPostTracker({ linkId, onChanged }: Props) {
   };
 
   return (
-    <Card title="Post Tracking" style={{ marginTop: 16 }}>
-      <Form form={form} layout="vertical">
+    <Card title="Post Tracking" style={{ marginTop: 16, width: '100%' }}>
+      <Form form={form} layout="vertical" style={{ display: 'grid', gap: 12 }}>
         <Form.Item
           label="Posted Platform"
           name="platform"
@@ -116,6 +116,7 @@ export default function LinkPostTracker({ linkId, onChanged }: Props) {
         loading={loading}
         dataSource={posts}
         pagination={false}
+        scroll={{ x: '100%' }}
         columns={[
           {
             title: 'Platform',

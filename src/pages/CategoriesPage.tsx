@@ -70,26 +70,41 @@ export default function CategoriesPage() {
       <Typography.Title level={3}>Categories</Typography.Title>
 
       <Card style={{ marginBottom: 16 }}>
-        <Form form={form} layout="inline">
-          <Form.Item
-            name="name"
-            rules={[{ required: true, message: 'Category name is required' }]}
+        <Form
+          form={form}
+          layout="vertical"
+          style={{ display: 'grid', gap: 12 }}
+        >
+          <div
+            style={{
+              display: 'grid',
+              gap: 12,
+              gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+            }}
           >
-            <Input placeholder="Category name" />
-          </Form.Item>
+            <Form.Item
+              name="name"
+              rules={[{ required: true, message: 'Category name is required' }]}
+            >
+              <Input placeholder="Category name" />
+            </Form.Item>
 
-          <Form.Item name="color">
-            <Input placeholder="Color e.g. blue, red" />
-          </Form.Item>
+            <Form.Item name="color">
+              <Input placeholder="Color e.g. blue, red" />
+            </Form.Item>
+          </div>
 
-          <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
-            Add Category
-          </Button>
+          <Form.Item>
+            <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
+              Add Category
+            </Button>
+          </Form.Item>
         </Form>
       </Card>
 
       <Card>
         <Table
+          scroll={{ x: '100%' }}
           loading={loading}
           rowKey="id"
           dataSource={categories}

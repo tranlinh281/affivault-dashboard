@@ -1,3 +1,4 @@
+﻿import { useState } from 'react';
 import { Button, Layout, Menu, Space, Typography, message } from 'antd';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -13,6 +14,7 @@ import { ImportOutlined } from '@ant-design/icons';
 const { Header, Sider, Content } = Layout;
 
 export default function AppLayout() {
+  const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -29,7 +31,16 @@ export default function AppLayout() {
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Sider theme="dark">
+      <Sider
+        theme="dark"
+        breakpoint="lg"
+        collapsedWidth={0}
+        collapsible
+        collapsed={collapsed}
+        onCollapse={(value) => setCollapsed(value)}
+        onBreakpoint={(broken) => setCollapsed(broken)}
+        style={{ minHeight: '100vh' }}
+      >
         <div style={{ padding: 16 }}>
           <Typography.Title level={4} style={{ color: '#fff', margin: 0 }}>
             AffiVault
@@ -71,8 +82,15 @@ export default function AppLayout() {
       </Sider>
 
       <Layout>
-        <Header style={{ background: '#fff' }}>
-          <Space style={{ width: '100%', justifyContent: 'space-between' }}>
+        <Header style={{ background: '#fff', padding: '0 16px' }}>
+          <Space
+            style={{
+              width: '100%',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: 12,
+            }}
+          >
             <Typography.Text strong>Affiliate Content Workspace</Typography.Text>
 
             <Button icon={<LogoutOutlined />} onClick={handleLogout}>
@@ -81,7 +99,7 @@ export default function AppLayout() {
           </Space>
         </Header>
 
-        <Content style={{ margin: 24 }}>
+        <Content style={{ margin: 24, minHeight: 'calc(100vh - 64px)' }}>
           <Outlet />
         </Content>
       </Layout>

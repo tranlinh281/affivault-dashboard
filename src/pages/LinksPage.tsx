@@ -136,18 +136,25 @@ export default function LinksPage() {
       </Space>
 
       <Card>
-        <Space style={{ marginBottom: 16, flexWrap: 'wrap' }}>
+        <div
+          style={{
+            marginBottom: 16,
+            display: 'grid',
+            gap: 12,
+            gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+          }}
+        >
           <Input.Search
             placeholder="Search product, shop, link, tag..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            style={{ width: 320 }}
+            style={{ width: '100%', minWidth: 0 }}
           />
 
           <Select
             allowClear
             placeholder="Filter platform"
-            style={{ width: 180 }}
+            style={{ width: '100%', minWidth: 0 }}
             value={platform}
             onChange={setPlatform}
             options={[
@@ -161,7 +168,7 @@ export default function LinksPage() {
           <Select
             allowClear
             placeholder="Filter status"
-            style={{ width: 160 }}
+            style={{ width: '100%', minWidth: 0 }}
             value={status}
             onChange={setStatus}
             options={[
@@ -175,7 +182,7 @@ export default function LinksPage() {
           <Select
             allowClear
             placeholder="Filter category"
-            style={{ width: 200 }}
+            style={{ width: '100%', minWidth: 0 }}
             value={categoryId}
             onChange={setCategoryId}
             options={categories.map((item) => ({
@@ -183,9 +190,10 @@ export default function LinksPage() {
               value: item.id,
             }))}
           />
-        </Space>
+        </div>
 
         <Table
+          scroll={{ x: 'max-content' }}
           loading={loading}
           rowKey="id"
           dataSource={filteredLinks}
@@ -237,15 +245,18 @@ export default function LinksPage() {
             {
               title: 'Price',
               dataIndex: 'price',
+              responsive: ['md'],
               render: (value) => value || '-',
             },
             {
               title: 'Shop',
               dataIndex: 'shop_name',
+              responsive: ['md'],
               render: (value) => value || '-',
             },
             {
               title: 'Commission',
+              responsive: ['lg'],
               render: (_, record) =>
                 record.commission_rate || record.commission_amount ? (
                   <span>
@@ -259,6 +270,7 @@ export default function LinksPage() {
             {
               title: 'Category',
               dataIndex: 'category_id',
+              responsive: ['lg'],
               render: (value) => getCategoryName(value),
             },
             {
@@ -331,6 +343,7 @@ export default function LinksPage() {
         open={detailOpen}
         onClose={() => setDetailOpen(false)}
         width={560}
+        style={{ maxWidth: '95vw' }}
       >
         {selectedLink && (
           <>
