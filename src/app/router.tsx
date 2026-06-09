@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+﻿import { createBrowserRouter } from 'react-router-dom';
 import AppLayout from '../components/AppLayout';
 import ProtectedRoute from '../components/ProtectedRoute';
 import CategoriesPage from '../pages/CategoriesPage';
@@ -8,40 +8,45 @@ import LoginPage from '../pages/LoginPage';
 import ImportPage from '../pages/ImportPage';
 import CampaignsPage from '../pages/CampaignsPage';
 
-export const router = createBrowserRouter([
+export const router = createBrowserRouter(
+  [
+    {
+      path: '/login',
+      element: <LoginPage />,
+    },
+    {
+      element: <ProtectedRoute />,
+      children: [
+        {
+          path: '/',
+          element: <AppLayout />,
+          children: [
+            {
+              index: true,
+              element: <DashboardPage />,
+            },
+            {
+              path: 'links',
+              element: <LinksPage />,
+            },
+            {
+              path: 'categories',
+              element: <CategoriesPage />,
+            },
+            {
+              path: 'import',
+              element: <ImportPage />,
+            },
+            {
+              path: 'campaigns',
+              element: <CampaignsPage />,
+            },
+          ],
+        },
+      ],
+    },
+  ],
   {
-    path: '/login',
-    element: <LoginPage />,
+    basename: import.meta.env.BASE_URL,
   },
-  {
-    element: <ProtectedRoute />,
-    children: [
-      {
-        path: '/',
-        element: <AppLayout />,
-        children: [
-          {
-            index: true,
-            element: <DashboardPage />,
-          },
-          {
-            path: 'links',
-            element: <LinksPage />,
-          },
-          {
-            path: 'categories',
-            element: <CategoriesPage />,
-          },
-          {
-            path: 'import',
-            element: <ImportPage />,
-          },
-          {
-            path: 'campaigns',
-            element: <CampaignsPage />,
-          },
-        ],
-      },
-    ],
-  },
-]);
+);
