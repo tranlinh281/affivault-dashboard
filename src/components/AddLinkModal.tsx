@@ -1,6 +1,10 @@
 import { Form, Input, Modal, Select, message } from 'antd';
 import { useEffect } from 'react';
-
+import { Upload } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
+import { uploadProductImage } from '../services/storageService';
+import type { UploadFile } from 'antd/es/upload/interface';
+import { useState } from 'react';
 import { detectPlatform } from '../lib/linkDetector';
 import {
   createAffiliateLink,
@@ -24,8 +28,8 @@ export default function AddLinkModal({
   onSuccess,
 }: Props) {
   const [form] = Form.useForm();
-
   const isEdit = Boolean(editingLink);
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
 
   useEffect(() => {
     if (!open) {
@@ -42,7 +46,23 @@ export default function AddLinkModal({
         category_id: editingLink.category_id,
         tags: editingLink.tags || [],
         note: editingLink.note,
+        status: editingLink.status,
+
+        product_image: editingLink.product_image,
       });
+
+      if (editingLink.product_image) {
+        setFileList([
+          {
+            uid: '-1',
+            name: 'product-image',
+            status: 'done',
+            url: editingLink.product_image,
+          }
+        ])
+      } else {
+        setFileList([]);
+      }
     }
   }, [open, editingLink, form]);
 
@@ -54,6 +74,12 @@ export default function AddLinkModal({
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
+      let productImageUrl = editingLink?.product_image || null;
+      const file = fileList[0]?.originFileObj;
+
+      if(file) {
+        productImageUrl = await uploadProductImage(file);
+      }
 
       const payload = {
         original_url: values.original_url,
@@ -63,6 +89,8 @@ export default function AddLinkModal({
         category_id: values.category_id || null,
         tags: values.tags || [],
         note: values.note || null,
+        product_image: productImageUrl,
+        status: values.status || 'draft',
       };
 
       if (editingLink) {
@@ -138,7 +166,32 @@ export default function AddLinkModal({
         <Form.Item label="Tags" name="tags">
           <Select mode="tags" placeholder="Example: keyboard, shopee, gaming" />
         </Form.Item>
-
+        <Form.Item label="Product Image">
+          <Upload
+            listType="picture-card"
+            fileList={fileList}
+            beforeUpload={() => false}
+            maxCount={1}
+            onChange={({ fileList }) => setFileList(fileList)}
+          >
+            {fileList.length >= 1 ? null : (
+              <div>
+                <PlusOutlined />
+                <div style={{ marginTop: 8 }}>Upload</div>
+              </div>
+            )}
+          </Upload>
+        </Form.Item>
+        <Form.Item label="Status" name="status" initialValue="draft">
+  <Select
+    options={[
+      { label: 'Draft', value: 'draft' },
+      { label: 'Saved', value: 'saved' },
+      { label: 'Posted', value: 'posted' },
+      { label: 'Archived', value: 'archived' },
+    ]}
+  />
+</Form.Item>
         <Form.Item label="Note" name="note">
           <Input.TextArea rows={3} placeholder="Note..." />
         </Form.Item>

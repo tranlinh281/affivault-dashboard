@@ -29,21 +29,19 @@ import {
   getAffiliateLinks,
 } from '../services/linkService';
 import type { AffiliateLink, Category } from '../types/affiliate';
+import LinkPostTracker from '../components/LinkPostTracker';
 
 export default function LinksPage() {
   const [links, setLinks] = useState<AffiliateLink[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-
   const [search, setSearch] = useState('');
   const [platform, setPlatform] = useState<string>();
   const [categoryId, setCategoryId] = useState<string>();
-
+  const [status, setStatus] = useState<string>();
   const [addOpen, setAddOpen] = useState(false);
   const [detailOpen, setDetailOpen] = useState(false);
-
   const [editingLink, setEditingLink] = useState<AffiliateLink | null>(null);
   const [selectedLink, setSelectedLink] = useState<AffiliateLink | null>(null);
-
   const [loading, setLoading] = useState(false);
 
   const loadData = async () => {
@@ -82,10 +80,10 @@ export default function LinksPage() {
 
       const matchPlatform = platform ? item.platform === platform : true;
       const matchCategory = categoryId ? item.category_id === categoryId : true;
-
-      return matchSearch && matchPlatform && matchCategory;
+      const matchStatus = status ? item.status === status : true;
+      return matchSearch && matchPlatform && matchCategory && matchStatus;
     });
-  }, [links, search, platform, categoryId]);
+  }, [links, search, platform, categoryId, status]);
 
   const getCategoryName = (id?: string | null) => {
     return categories.find((item) => item.id === id)?.name || '-';
@@ -160,6 +158,19 @@ export default function LinksPage() {
               { label: 'Unknown', value: 'unknown' },
             ]}
           />
+          <Select
+            allowClear
+            placeholder="Filter status"
+            style={{ width: 160 }}
+            value={status}
+            onChange={setStatus}
+            options={[
+              { label: 'Draft', value: 'draft' },
+              { label: 'Saved', value: 'saved' },
+              { label: 'Posted', value: 'posted' },
+              { label: 'Archived', value: 'archived' },
+            ]}
+          />
 
           <Select
             allowClear
@@ -180,6 +191,26 @@ export default function LinksPage() {
           dataSource={filteredLinks}
           columns={[
             {
+              title: 'Image',
+              dataIndex: 'product_image',
+              width: 90,
+              render: (value) =>
+                value ? (
+                  <img
+                    src={value}
+                    alt="product"
+                    style={{
+                      width: 56,
+                      height: 56,
+                      objectFit: 'cover',
+                      borderRadius: 8,
+                    }}
+                  />
+                ) : (
+                  '-'
+                ),
+            },
+            {
               title: 'Product',
               dataIndex: 'product_name',
               render: (value) => value || 'Unknown product',
@@ -188,6 +219,20 @@ export default function LinksPage() {
               title: 'Platform',
               dataIndex: 'platform',
               render: (value) => <Tag>{value}</Tag>,
+            },
+            {
+              title: 'Status',
+              dataIndex: 'status',
+              render: (value) => {
+                const colorMap: Record<string, string> = {
+                  draft: 'default',
+                  saved: 'blue',
+                  posted: 'green',
+                  archived: 'red',
+                };
+
+                return <Tag color={colorMap[value] || 'default'}>{value || 'draft'}</Tag>;
+              },
             },
             {
               title: 'Price',
@@ -288,98 +333,120 @@ export default function LinksPage() {
         width={560}
       >
         {selectedLink && (
-          <Descriptions column={1} bordered>
-            <Descriptions.Item label="Product">
-              {selectedLink.product_name || '-'}
-            </Descriptions.Item>
+          <>
+            <Descriptions column={1} bordered>
+              <Descriptions.Item label="Image">
+                {selectedLink.product_image ? (
+                  <img
+                    src={selectedLink.product_image}
+                    alt="product"
+                    style={{
+                      width: 160,
+                      height: 160,
+                      objectFit: 'cover',
+                      borderRadius: 12,
+                    }}
+                  />
+                ) : (
+                  '-'
+                )}
+              </Descriptions.Item>
+              <Descriptions.Item label="Product">
+                {selectedLink.product_name || '-'}
+              </Descriptions.Item>
 
-            <Descriptions.Item label="Platform">
-              <Tag>{selectedLink.platform}</Tag>
-            </Descriptions.Item>
+              <Descriptions.Item label="Platform">
+                <Tag>{selectedLink.platform}</Tag>
+              </Descriptions.Item>
 
-            <Descriptions.Item label="Shop">
-              {selectedLink.shop_name || '-'}
-            </Descriptions.Item>
+              <Descriptions.Item label="Shop">
+                {selectedLink.shop_name || '-'}
+              </Descriptions.Item>
 
-            <Descriptions.Item label="Price">
-              {selectedLink.price || '-'}
-            </Descriptions.Item>
+              <Descriptions.Item label="Price">
+                {selectedLink.price || '-'}
+              </Descriptions.Item>
 
-            <Descriptions.Item label="Sold">
-              {selectedLink.sold || '-'}
-            </Descriptions.Item>
+              <Descriptions.Item label="Sold">
+                {selectedLink.sold || '-'}
+              </Descriptions.Item>
 
-            <Descriptions.Item label="Commission">
-              {selectedLink.commission_rate || '-'} /{' '}
-              {selectedLink.commission_amount || '-'}
-            </Descriptions.Item>
+              <Descriptions.Item label="Commission">
+                {selectedLink.commission_rate || '-'} /{' '}
+                {selectedLink.commission_amount || '-'}
+              </Descriptions.Item>
 
-            <Descriptions.Item label="Category">
-              {getCategoryName(selectedLink.category_id)}
-            </Descriptions.Item>
+              <Descriptions.Item label="Category">
+                {getCategoryName(selectedLink.category_id)}
+              </Descriptions.Item>
 
-            <Descriptions.Item label="Tags">
-              {selectedLink.tags?.length
-                ? selectedLink.tags.map((tag) => <Tag key={tag}>{tag}</Tag>)
-                : '-'}
-            </Descriptions.Item>
+              <Descriptions.Item label="Tags">
+                {selectedLink.tags?.length
+                  ? selectedLink.tags.map((tag) => <Tag key={tag}>{tag}</Tag>)
+                  : '-'}
+              </Descriptions.Item>
 
-            <Descriptions.Item label="Product URL">
-              {selectedLink.product_url || selectedLink.original_url ? (
-                <Space direction="vertical">
-                  <a
-                    href={selectedLink.product_url || selectedLink.original_url}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Open product URL
-                  </a>
+              <Descriptions.Item label="Product URL">
+                {selectedLink.product_url || selectedLink.original_url ? (
+                  <Space direction="vertical">
+                    <a
+                      href={selectedLink.product_url || selectedLink.original_url}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Open product URL
+                    </a>
 
-                  <Button
-                    icon={<CopyOutlined />}
-                    onClick={() =>
-                      handleCopy(selectedLink.product_url || selectedLink.original_url)
-                    }
-                  >
-                    Copy Product URL
-                  </Button>
-                </Space>
-              ) : (
-                '-'
-              )}
-            </Descriptions.Item>
+                    <Button
+                      icon={<CopyOutlined />}
+                      onClick={() =>
+                        handleCopy(selectedLink.product_url || selectedLink.original_url)
+                      }
+                    >
+                      Copy Product URL
+                    </Button>
+                  </Space>
+                ) : (
+                  '-'
+                )}
+              </Descriptions.Item>
 
-            <Descriptions.Item label="Affiliate URL">
-              {selectedLink.affiliate_url ? (
-                <Space direction="vertical">
-                  <a
-                    href={selectedLink.affiliate_url}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Open affiliate URL
-                  </a>
+              <Descriptions.Item label="Affiliate URL">
+                {selectedLink.affiliate_url ? (
+                  <Space direction="vertical">
+                    <a
+                      href={selectedLink.affiliate_url}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Open affiliate URL
+                    </a>
 
-                  <Button
-                    icon={<CopyOutlined />}
-                    onClick={() => handleCopy(selectedLink.affiliate_url)}
-                  >
-                    Copy Affiliate URL
-                  </Button>
-                </Space>
-              ) : (
-                '-'
-              )}
-            </Descriptions.Item>
+                    <Button
+                      icon={<CopyOutlined />}
+                      onClick={() => handleCopy(selectedLink.affiliate_url)}
+                    >
+                      Copy Affiliate URL
+                    </Button>
+                  </Space>
+                ) : (
+                  '-'
+                )}
+              </Descriptions.Item>
 
-            <Descriptions.Item label="Note">
-              {selectedLink.note || '-'}
-            </Descriptions.Item>
+              <Descriptions.Item label="Note">
+                {selectedLink.note || '-'}
+              </Descriptions.Item>
 
-            <Descriptions.Item label="Created At">
-              {selectedLink.created_at}
-            </Descriptions.Item>
-          </Descriptions>
+              <Descriptions.Item label="Created At">
+                {selectedLink.created_at}
+              </Descriptions.Item>
+            </Descriptions>
+            <LinkPostTracker
+              linkId={selectedLink.id}
+              onChanged={loadData}
+            />
+          </>
         )}
       </Drawer>
     </div>

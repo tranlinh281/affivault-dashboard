@@ -49,6 +49,8 @@ export default function ImportPage() {
           sold: parsed.sold,
           commission_rate: parsed.commissionRate,
           commission_amount: parsed.commissionAmount,
+
+          status: 'draft',
         });
       }
 

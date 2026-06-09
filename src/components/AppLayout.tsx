@@ -2,6 +2,7 @@ import { Button, Layout, Menu, Space, Typography, message } from 'antd';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   DashboardOutlined,
+  FlagOutlined,
   LinkOutlined,
   LogoutOutlined,
   TagsOutlined,
@@ -60,6 +61,11 @@ export default function AppLayout() {
               icon: <ImportOutlined />,
               label: <Link to="/import">Import</Link>,
             },
+            {
+              key: '/campaigns',
+              icon: <FlagOutlined />,
+              label: <Link to="/campaigns">Campaigns</Link>,
+            },
           ]}
         />
       </Sider>
@@ -67,7 +73,7 @@ export default function AppLayout() {
       <Layout>
         <Header style={{ background: '#fff' }}>
           <Space style={{ width: '100%', justifyContent: 'space-between' }}>
-            <Typography.Text strong>Affiliate Link Manager</Typography.Text>
+            <Typography.Text strong>Affiliate Content Workspace</Typography.Text>
 
             <Button icon={<LogoutOutlined />} onClick={handleLogout}>
               Logout

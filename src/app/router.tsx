@@ -6,6 +6,7 @@ import DashboardPage from '../pages/DashboardPage';
 import LinksPage from '../pages/LinksPage';
 import LoginPage from '../pages/LoginPage';
 import ImportPage from '../pages/ImportPage';
+import CampaignsPage from '../pages/CampaignsPage';
 
 export const router = createBrowserRouter([
   {
@@ -31,9 +32,13 @@ export const router = createBrowserRouter([
             path: 'categories',
             element: <CategoriesPage />,
           },
-           {
+          {
             path: 'import',
             element: <ImportPage />,
+          },
+          {
+            path: 'campaigns',
+            element: <CampaignsPage />,
           },
         ],
       },

@@ -16,6 +16,8 @@ export type CreateLinkPayload = {
   sold?: string | null;
   commission_rate?: string | null;
   commission_amount?: string | null;
+  product_image?: string | null;
+  status?: string | null;
 };
 
 export async function getAffiliateLinks() {
@@ -37,6 +39,7 @@ export async function createAffiliateLink(payload: CreateLinkPayload) {
 
   const { error } = await supabase.from('affiliate_links').insert({
     ...payload,
+    status: payload.status || 'draft',
     user_id: userData.user.id,
   });
 
@@ -49,10 +52,16 @@ export async function updateAffiliateLink(
 ) {
   const { error } = await supabase
     .from('affiliate_links')
-    .update(payload)
+    .update({
+      ...payload,
+      status: payload.status || 'draft',
+    })
     .eq('id', id);
 
-  if (error) throw error;
+  if (error) {
+    console.error('Update affiliate link error:', error);
+    throw error;
+  }
 }
 
 export async function deleteAffiliateLink(id: string) {
